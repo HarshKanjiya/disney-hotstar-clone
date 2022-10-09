@@ -45,8 +45,9 @@ const NavBar = () => {
         }))
         
       })
+      .then(()=>navigate('/home'))
       .catch(err => console.log('err.message', err.message))
-      navigate('/home')
+      
  
   }
 

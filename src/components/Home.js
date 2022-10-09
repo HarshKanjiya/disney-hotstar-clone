@@ -115,7 +115,9 @@ overflow-x: hidden;
 `
 const Carousel = styled(Slider)`
 margin-bottom: 20px;
-
+border: none;
+outline: none;
+user-select: none;
 ul li button{
   &::before{
     font-size: 10px;
@@ -128,7 +130,9 @@ li.slick-active button:before{
 
 `
 const SliderImg = styled.div`
-
+border: none;
+outline: none;
+user-select: none;
 width: 90vw;
 padding-bottom: 30px;
 
@@ -142,7 +146,7 @@ img{
         transition: 250ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
         box-shadow: 0 10px 30px rgba(0,0,0,0.7);
       &:hover{
-        border:  1px solid aliceblue;
+        border: 3px solid #f5f5f5;
       }
         
 }
@@ -183,7 +187,15 @@ justify-content: center;
 position: relative;
 box-shadow: 0 10px 30px rgba(0,0,0,0.7);
 border-radius: 9px;
+transition: 300ms;
 /* overflow: hidden; */
+&:hover{
+  scale:1.03;
+
+  img{
+    border-color: white;
+  }
+}
 
 img{
   max-width: 45vw;
@@ -192,6 +204,7 @@ img{
   border-radius: 9px;
   border: 2px solid #565656;
   z-index: 99;
+  
 }
 
 video{
