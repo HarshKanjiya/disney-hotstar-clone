@@ -20,17 +20,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
 
 
-const googleProvider = new GoogleAuthProvider();
-export const signInWithGooglePopup = () =>
-  signInWithPopup(auth, googleProvider);
-
-export const signOutUser = async () => await signOut(auth);
-
-export const onAuthStateChangedListener = (callback) =>
-  onAuthStateChanged(auth, callback);
 

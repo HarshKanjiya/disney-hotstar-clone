@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Slider from 'react-slick'
 // import 'slick-carousel/slick/slick.css'
 // import 'slick-carousel/slick/slick-theme.css'
@@ -22,8 +22,20 @@ import video2 from '../assets/videos/1564676115-marvel.mp4'
 import video3 from '../assets/videos/1564676296-national-geographic.mp4'
 import video4 from '../assets/videos/1564676714-pixar.mp4'
 import video5 from '../assets/videos/1608229455-star-wars.mp4'
+import { useNavigate } from 'react-router-dom'
+import { getAuth } from 'firebase/auth'
+
+const auth = getAuth();
+
 
 function Home() {
+const navigate= useNavigate()
+  
+  useEffect(()=> {
+    if(!auth.currentUser){navigate(-1)}
+  },
+  [auth])
+
     var settings = {
         dots: true,
         infinite: true,
@@ -145,8 +157,6 @@ justify-content: center;
 const Brands = styled.div`
 height: max-content;
 margin-top: 30px;
-
-
 
 display: grid;
 

@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from "react-router-dom";
 
-import { selectUserEmail,selectUserName,selectUserPhoto, setUserDetails } from '../config/authSlice'
-import { signInWithGooglePopup } from "../config/firebase";
+import { selectUserEmail,selectUserName,selectUserPhoto, setSignOutState, setUserDetails } from '../config/authSlice'
+import { app, auth, signInWithGooglePopup } from "../config/firebase";
 import { ReactComponent as MainLogo} from '../assets/images/logo.svg';
 import { ReactComponent as Home} from '../assets/images/home-icon.svg';
 import { ReactComponent as Search} from '../assets/images/search-icon.svg';
@@ -13,44 +13,54 @@ import { ReactComponent as Orignals} from '../assets/images/original-icon.svg';
 import { ReactComponent as Movies} from '../assets/images/movie-icon.svg';
 import { ReactComponent as Series} from '../assets/images/series-icon.svg';
 import { signOutUser } from "../config/firebase";
+import { useEffect, useState } from "react";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+
+
+
 
 const NavBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [dropDown, setDropdown] = useState(false)
   const  userName = useSelector(selectUserName);
   const  userEmail = useSelector(selectUserEmail);
   const  userPhoto = useSelector(selectUserPhoto);
 
-  const handleAuth =()=> {
-    signInWithGooglePopup().then((res)=>{
-      setUser(res.user);
-      navigate('/home');
-    })
-    .catch((err)=>alert(err.message))
-  }
+    console.log('userName', userName)
+  
+  const auth = getAuth(app)
+  const provider = new GoogleAuthProvider();
 
-  const setUser = (user) => {
-    dispatch(
-      setUserDetails({
-        name:user.displayName,
-        email: user.email,
-        photo: user.photoURL
+  const handleAuth =()=> {
+
+    signInWithPopup(auth,provider)
+    .then(res => 
+      {
+        console.log('res', res)
+        dispatch(setUserDetails({
+          name:res.user.displayName,
+          email:res.user.email,
+          photo:res.user.photoURL
+        }))
+        
       })
-    )
+      .catch(err => console.log('err.message', err.message))
+      navigate('/home')
+ 
   }
 
   const signOutUser =async () => {
-    signOutUser().then(()=>{
+
+    await signOut(auth).then(()=>{
       navigate(-1)
-      dispatch(
-        setUserDetails({
-          name:null,
-          email: null,
-          photo: null
-        })
-      )
+      dispatch(setSignOutState(0))
     })
+    setDropdown(false)
   }
+  const dropdownhandler = () => {
+    setDropdown(!dropDown)
+  } 
     return ( 
         <Container>
             <MainLogo style={{height:34}}/>
@@ -70,10 +80,11 @@ const NavBar = () => {
             }
 
             {
-              userName ?
-            <UserImg>
+              auth.currentUser ?
+            <UserImg onClick={dropdownhandler} >
               <img src={userPhoto} alt={userName} />
-              <DropDown className="dropdownclass"  
+              <DropDown
+               className={dropDown ?"dropdownclassVisible":"dropdownclassGone"}  
               onClick={()=>signOutUser()}
               >
                 <p>SIGN OUT</p>
@@ -182,11 +193,16 @@ width: 40px;
 height: auto;
 }
 
-&:hover{
-  .dropdownclass{
+
+  .dropdownclassVisible{
     visibility: visible;
   }
-}
+  
+  .dropdownclassGone{
+    visibility: none;
+  }
+
+
 `
 
 const DropDown = styled.div`
